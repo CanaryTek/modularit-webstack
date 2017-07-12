@@ -54,6 +54,9 @@ case "$1" in
 	start)
 		echo -n "Starting php-fpm "
 
+    # Create socket dir if it doesn't exist
+    [ -d /var/run/php-<%= @php_version %>-fpm ] || mkdir -p /var/run/php-<%= @php_version %>-fpm
+
 		$php_fpm_BIN --daemonize $php_opts
 
 		if [ "$?" != 0 ] ; then

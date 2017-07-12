@@ -52,14 +52,17 @@ php_versions.each do |ver|
       tar xvjf php-#{ver}.tar.bz2
       cd php-#{ver}
       mkdir -p #{install_prefix}/php-#{ver}/etc/php.d
-      ./configure --prefix=#{install_prefix}/php-#{ver} --with-config-file-path=#{install_prefix}/php-#{ver}/etc \
-                  --with-config-file-scan-dir=#{install_prefix}/php-#{ver}/etc/php.d #{build_opts}
+      BUILD="./configure --prefix=#{install_prefix}/php-#{ver} --with-config-file-path=#{install_prefix}/php-#{ver}/etc \
+                  --with-config-file-scan-dir=#{install_prefix}/php-#{ver}/etc/php.d #{build_opts}"
+      echo $BUILD > BUILD_OPTIONS
+      $BUILD
       make
       #make test
       make install
       cp php.ini-production #{install_prefix}/php-#{ver}/etc/php.ini
+      [ -f #{install_prefix}/php-#{ver}/bin/php ] && touch #{install_prefix}/php-#{ver}/bin/__REMOVE_TO_RECOMPILE_PHP__
     EOH
-    creates "#{install_prefix}/php-#{ver}/bin/php"
+    creates "#{install_prefix}/php-#{ver}/bin/__REMOVE_TO_RECOMPILE_PHP__"
   end
 
   # Install pear packages
